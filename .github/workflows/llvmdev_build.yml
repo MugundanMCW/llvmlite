@@ -158,14 +158,17 @@ jobs:
 
       - name: Build LLVM package - Windows ARM64 platform
         if: matrix.platform == 'win-arm64' 
+        shell: cmd
         env:
-          CONDA_CHANNEL_DIR: conda_channel_dir
+          ARTIFACT_DIR: llvm_arm64_artifact
         run: |
-          set -x
-          mkdir -p "${CONDA_CHANNEL_DIR}"
-          conda build -c defaults "./conda-recipes/${{ matrix.recipe }}" "--output-folder=${CONDA_CHANNEL_DIR}"
+          call buildscripts\windows_arm64\bld_llvm_winarm64.bat
+          if %ERRORLEVEL% neq 0 exit /B %ERRORLEVEL%
+          mkdir "%ARTIFACT_DIR%"
+          xcopy /E /I /Y llvm-arm64-install "%ARTIFACT_DIR%\llvm-arm64-install"
 
       - name: Upload conda package
+        if: matrix.platform != 'win-arm64'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: ${{ matrix.recipe }}_${{ matrix.platform }}
@@ -173,6 +176,16 @@ jobs:
           compression-level: 0
           retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
           if-no-files-found: error
+          
+      - name: Upload Windows ARM64 LLVM artifacts
+        if: matrix.platform == 'win-arm64'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: llvm_${{ matrix.platform }}
+          path: llvm_arm64_artifact
+          compression-level: 0
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+          if-no-files-found: error      
 
       - name: Get Workflow Run ID
         run: |
