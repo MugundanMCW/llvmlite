@@ -15,7 +15,7 @@ REM Setup VS2022 ARM64 environment
 call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsarm64.bat" 
 
 REM Install dependencies using existing vcpkg
-"%VCPKG_DIR%\vcpkg.exe" install zlib:arm64-windows zstd:arm64-windows libxml2:arm64-windows 
+"%VCPKG_DIR%\vcpkg.exe" install zlib:arm64-windows-static zstd:arm64-windows-static libxml2:arm64-windows-static 
 
 REM Download and extract LLVM source
 if not exist "%LLVM_SRC_DIR%\llvm" (
@@ -35,7 +35,7 @@ cmake -G "Ninja" ^
     -DCMAKE_BUILD_TYPE=Release ^
     -DCMAKE_INSTALL_PREFIX=%INSTALL_PREFIX% ^
     -DCMAKE_TOOLCHAIN_FILE=%VCPKG_DIR%\scripts\buildsystems\vcpkg.cmake ^
-    -DVCPKG_TARGET_TRIPLET=arm64-windows ^
+    -DVCPKG_TARGET_TRIPLET=arm64-windows-static ^
     -DCMAKE_SYSTEM_NAME=Windows ^
     -DCMAKE_SYSTEM_PROCESSOR=ARM64 ^
     -DLLVM_TARGET_ARCH=AArch64 ^
@@ -71,6 +71,7 @@ cmake -G "Ninja" ^
     -DCOMPILER_RT_BUILD_GWP_ASAN=OFF ^
     -DCOMPILER_RT_BUILD_ORC=OFF ^
     -DCOMPILER_RT_INCLUDE_TESTS=OFF ^
+    -DBUILD_SHARED_LIBS=OFF ^
     "%LLVM_SRC_DIR%\llvm"
 
 if !ERRORLEVEL! neq 0 exit /B 1

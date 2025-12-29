@@ -45,13 +45,6 @@ default_include = [
     {"runner": runner_mapping["win-64"], "platform": "win-64", "python-version": "3.12"},
     {"runner": runner_mapping["win-64"], "platform": "win-64", "python-version": "3.13"},
     {"runner": runner_mapping["win-64"], "platform": "win-64", "python-version": "3.14"},
-
-    # win-arm64
-    {"runner": runner_mapping["win-arm64"], "platform": "win-arm64", "python-version": "3.10"},
-    {"runner": runner_mapping["win-arm64"], "platform": "win-arm64", "python-version": "3.11"},
-    {"runner": runner_mapping["win-arm64"], "platform": "win-arm64", "python-version": "3.12"},
-    {"runner": runner_mapping["win-arm64"], "platform": "win-arm64", "python-version": "3.13"},
-    {"runner": runner_mapping["win-arm64"], "platform": "win-arm64", "python-version": "3.14"},
 ]
 
 print(
