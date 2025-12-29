@@ -14,6 +14,7 @@ runner_mapping = {
     "linux-aarch64": "ubuntu-24.04-arm",
     "osx-arm64": "macos-14",
     "win-64": "windows-2025",
+    "win-arm64": "windows-11-arm",
 }
 
 default_include = [
@@ -44,6 +45,13 @@ default_include = [
     {"runner": runner_mapping["win-64"], "platform": "win-64", "python-version": "3.12"},
     {"runner": runner_mapping["win-64"], "platform": "win-64", "python-version": "3.13"},
     {"runner": runner_mapping["win-64"], "platform": "win-64", "python-version": "3.14"},
+
+    # win-arm64
+    {"runner": runner_mapping["win-arm64"], "platform": "win-arm64", "python-version": "3.10"},
+    {"runner": runner_mapping["win-arm64"], "platform": "win-arm64", "python-version": "3.11"},
+    {"runner": runner_mapping["win-arm64"], "platform": "win-arm64", "python-version": "3.12"},
+    {"runner": runner_mapping["win-arm64"], "platform": "win-arm64", "python-version": "3.13"},
+    {"runner": runner_mapping["win-arm64"], "platform": "win-arm64", "python-version": "3.14"},
 ]
 
 print(
