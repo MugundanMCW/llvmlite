@@ -116,7 +116,7 @@ jobs:
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Install validation dependencies
-        run: python -m pip install py-lief wheel twine keyring rfc3986
+        run: python -m pip install lief wheel twine keyring rfc3986
 
       - name: Download llvmlite wheels
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
