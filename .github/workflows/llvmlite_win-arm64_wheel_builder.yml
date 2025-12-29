@@ -85,7 +85,7 @@ jobs:
         run: |
           if not exist wheel_temp mkdir wheel_temp
           move dist\*.whl wheel_temp\
-          python -m delvewheel repair --analyze-existing -w dist wheel_temp\*.whl
+          python -m delvewheel repair --add-path "C:\vcpkg\installed\arm64-windows\bin" --analyze-existing -w dist wheel_temp\*.whl
           dir dist
 
       - name: Upload llvmlite wheel
