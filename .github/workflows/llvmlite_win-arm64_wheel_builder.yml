@@ -65,7 +65,7 @@ jobs:
           path: C:\vcpkg\installed
           key: vcpkg-installed-windows-arm64-static-v1
           restore-keys: |
-            vcpkg-installed-windows-arm64-
+            vcpkg-installed-windows-arm64-static
 
       - name: Install build dependencies
         env:
