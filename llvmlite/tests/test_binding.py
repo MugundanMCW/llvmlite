@@ -3038,9 +3038,8 @@ class TestBuild(TestCase):
                                                 "api-ms-win-crt-utility-l1-1-0",
                                                 "shell32",  # this is delayed
                                                 "ole32",]), # also delayed
-                                 "arm64": set(["z",
-                                                "zstd",
-                                                "advapi32",
+                                                
+                                 "arm64": set([ "advapi32",
                                                 "kernel32",
                                                 "ntdll",
                                                 "msvcp140",
