@@ -12,22 +12,22 @@ if not defined VCPKG_INSTALLATION_ROOT set "VCPKG_INSTALLATION_ROOT=C:\vcpkg"
 set "VCPKG_DIR=%VCPKG_INSTALLATION_ROOT%"
 
 REM Setup VS2022 ARM64 environment
-call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsarm64.bat" 
+call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" arm64
 
-REM Install dependencies using existing vcpkg
-"%VCPKG_DIR%\vcpkg.exe" install zlib:arm64-windows-static zstd:arm64-windows-static libxml2:arm64-windows-static 
+REM Install dependencies using vcpkg
+"%VCPKG_DIR%\vcpkg.exe" install zlib:arm64-windows-static zstd:arm64-windows-static libxml2:arm64-windows-static
 
 REM Download and extract LLVM source
 if not exist "%LLVM_SRC_DIR%\llvm" (
     if not exist "llvm-project-%LLVM_VERSION%.src.tar.xz" (
-        curl -L -o "llvm-project-%LLVM_VERSION%.src.tar.xz" "https://github.com/llvm/llvm-project/releases/download/llvmorg-%LLVM_VERSION%/llvm-project-%LLVM_VERSION%.src.tar.xz" 
+        curl -L -o "llvm-project-%LLVM_VERSION%.src.tar.xz" "https://github.com/llvm/llvm-project/releases/download/llvmorg-%LLVM_VERSION%/llvm-project-%LLVM_VERSION%.src.tar.xz"
     )
-    tar -xf "llvm-project-%LLVM_VERSION%.src.tar.xz" 
-    if exist "llvm-project-%LLVM_VERSION%.src" move "llvm-project-%LLVM_VERSION%.src" "llvm-project-%LLVM_VERSION%" 
+    tar -xf "llvm-project-%LLVM_VERSION%.src.tar.xz"
+    if exist "llvm-project-%LLVM_VERSION%.src" move "llvm-project-%LLVM_VERSION%.src" "llvm-project-%LLVM_VERSION%"
 )
 
 REM Configure
-if exist "%BUILD_DIR%" rmdir /S /Q "%BUILD_DIR%" 
+if exist "%BUILD_DIR%" rmdir /S /Q "%BUILD_DIR%"
 mkdir "%BUILD_DIR%"
 cd /d "%BUILD_DIR%"
 
@@ -36,12 +36,6 @@ cmake -G "Ninja" ^
     -DCMAKE_INSTALL_PREFIX=%INSTALL_PREFIX% ^
     -DCMAKE_TOOLCHAIN_FILE=%VCPKG_DIR%\scripts\buildsystems\vcpkg.cmake ^
     -DVCPKG_TARGET_TRIPLET=arm64-windows-static ^
-    -DCMAKE_SYSTEM_NAME=Windows ^
-    -DCMAKE_SYSTEM_PROCESSOR=ARM64 ^
-    -DLLVM_TARGET_ARCH=AArch64 ^
-    -DLLVM_TARGETS_TO_BUILD=AArch64;X86;ARM ^
-    -DLLVM_DEFAULT_TARGET_TRIPLE=aarch64-pc-windows-msvc ^
-    -DLLVM_HOST_TRIPLE=aarch64-pc-windows-msvc ^
     -DLLVM_USE_INTEL_JITEVENTS=OFF ^
     -DLLVM_ENABLE_LIBXML2=FORCE_ON ^
     -DLLVM_ENABLE_RTTI=OFF ^
@@ -60,17 +54,6 @@ cmake -G "Ninja" ^
     -DLLVM_ENABLE_PROJECTS=lld ^
     -DLLVM_ENABLE_ASSERTIONS=ON ^
     -DLLVM_ENABLE_DIA_SDK=OFF ^
-    -DCOMPILER_RT_BUILD_BUILTINS=ON ^
-    -DCOMPILER_RT_BUILTINS_HIDE_SYMBOLS=OFF ^
-    -DCOMPILER_RT_BUILD_LIBFUZZER=OFF ^
-    -DCOMPILER_RT_BUILD_CRT=OFF ^
-    -DCOMPILER_RT_BUILD_MEMPROF=OFF ^
-    -DCOMPILER_RT_BUILD_PROFILE=OFF ^
-    -DCOMPILER_RT_BUILD_SANITIZERS=OFF ^
-    -DCOMPILER_RT_BUILD_XRAY=OFF ^
-    -DCOMPILER_RT_BUILD_GWP_ASAN=OFF ^
-    -DCOMPILER_RT_BUILD_ORC=OFF ^
-    -DCOMPILER_RT_INCLUDE_TESTS=OFF ^
     -DBUILD_SHARED_LIBS=OFF ^
     "%LLVM_SRC_DIR%\llvm"
 
