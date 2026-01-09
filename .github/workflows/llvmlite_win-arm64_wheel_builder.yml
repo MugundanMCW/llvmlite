@@ -96,6 +96,8 @@ jobs:
       - name: Build wheel
         env:
           CMAKE_GENERATOR: Visual Studio 17 2022
+          CMAKE_GENERATOR_ARCH: ARM64
+          CMAKE_GENERATOR_TOOLKIT: v143
           CMAKE_GENERATOR_INSTANCE: C:\Program Files\Microsoft Visual Studio\2022\Enterprise
           CMAKE_ARGS: -DLLVMLITE_PACKAGE_FORMAT=wheel -DCMAKE_PREFIX_PATH=C:\vcpkg\installed\arm64-windows-static
           LLVM_DIR: ${{ github.workspace }}\llvm_install\llvm-arm64-install\lib\cmake\llvm
