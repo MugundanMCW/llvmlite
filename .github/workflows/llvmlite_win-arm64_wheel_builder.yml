@@ -89,9 +89,7 @@ jobs:
       - name: Build wheel
         env:
           VSINSTALLDIR: ${{ env.VS_INSTALL_DIR }}
-          CMAKE_ARGS: >
-            -DDIA_SDK_DIR=${{ env.VS_INSTALL_DIR }}\DIA SDK
-            -DCMAKE_PREFIX_PATH=C:\vcpkg\installed\arm64-windows-static
+          CMAKE_ARGS: -DDIA_SDK_DIR="${{ env.VS_INSTALL_DIR }}\DIA SDK" -DCMAKE_PREFIX_PATH=C:\vcpkg\installed\arm64-windows-static
           LLVM_DIR: ${{ github.workspace }}\llvm_install\llvm-arm64-install\lib\cmake\llvm
           LLVMLITE_PACKAGE_FORMAT: "wheel"
         run: python -m build --wheel --no-isolation
