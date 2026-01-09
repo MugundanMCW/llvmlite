@@ -73,54 +73,34 @@ jobs:
         run: |
           "%VCPKG_DIR%\vcpkg.exe" install zlib:arm64-windows-static zstd:arm64-windows-static libxml2:arm64-windows-static 
           python -m pip install build wheel setuptools delvewheel
-          
-      - name: Detect Visual Studio Installation
-        id: detect-vs
-        shell: powershell
-        run: |
-          # Use vswhere to find the correct installation
-          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-          
-          # Try Enterprise first
-          $vsPath = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.ARM64 -property installationPath -version "[17.0,18.0)" -prerelease
-          
-          if ([string]::IsNullOrEmpty($vsPath)) {
-            Write-Error "Visual Studio 2022 with ARM64 tools not found"
-            exit 1
-          }
-          
-          echo "Found VS at: $vsPath"
-          echo "VS_INSTALL_DIR=$vsPath" >> $env:GITHUB_ENV
-          echo "VSINSTALLDIR=$vsPath\" >> $env:GITHUB_ENV
 
-      - name: Check for diaguids.lib
+      - name: Create symlink from Community to Enterprise DIA SDK
         shell: powershell
         run: |
-          Write-Host "=== Checking for diaguids.lib in VS installations ===" -ForegroundColor Cyan
+          $enterpriseDiaPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\DIA SDK"
+          $communityDiaPath = "C:\Program Files\Microsoft Visual Studio\2022\Community\DIA SDK"
           
-          $paths = @(
-            "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\DIA SDK\lib\arm64\diaguids.lib",
-            "C:\Program Files\Microsoft Visual Studio\2022\Community\DIA SDK\lib\arm64\diaguids.lib",
-            "C:\Program Files\Microsoft Visual Studio\2022\Professional\DIA SDK\lib\arm64\diaguids.lib"
-          )
-          
-          foreach ($path in $paths) {
-            if (Test-Path $path) {
-              Write-Host "FOUND: $path" -ForegroundColor Green
-            } else {
-              Write-Host "NOT FOUND: $path" -ForegroundColor Red
+          if (Test-Path $enterpriseDiaPath) {
+            Write-Host "Enterprise DIA SDK found at: $enterpriseDiaPath" -ForegroundColor Green
+            
+            # Create Community directory if it doesn't exist
+            $communityVsPath = "C:\Program Files\Microsoft Visual Studio\2022\Community"
+            if (-not (Test-Path $communityVsPath)) {
+              Write-Host "Creating Community VS directory..." -ForegroundColor Yellow
+              New-Item -ItemType Directory -Path $communityVsPath -Force | Out-Null
             }
-          }
-          
-          Write-Host ""
-          Write-Host "=== Searching for all diaguids.lib files ===" -ForegroundColor Cyan
-          $allFiles = Get-ChildItem -Path "C:\Program Files\Microsoft Visual Studio" -Recurse -Filter "diaguids.lib" -ErrorAction SilentlyContinue
-          if ($allFiles) {
-            foreach ($file in $allFiles) {
-              Write-Host "Found: $($file.FullName)" -ForegroundColor Yellow
+            
+            # Create symlink
+            if (-not (Test-Path $communityDiaPath)) {
+              Write-Host "Creating symlink: $communityDiaPath -> $enterpriseDiaPath" -ForegroundColor Yellow
+              New-Item -ItemType SymbolicLink -Path $communityDiaPath -Target $enterpriseDiaPath -Force | Out-Null
+              Write-Host "Symlink created successfully!" -ForegroundColor Green
+            } else {
+              Write-Host "Community DIA SDK already exists, skipping symlink creation" -ForegroundColor Cyan
             }
           } else {
-            Write-Host "No diaguids.lib files found anywhere in Visual Studio installation" -ForegroundColor Red
+            Write-Error "Enterprise DIA SDK not found!"
+            exit 1
           }
       
       - name: Build wheel
