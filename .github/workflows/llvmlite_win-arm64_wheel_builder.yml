@@ -106,13 +106,14 @@ jobs:
           
           foreach ($path in $paths) {
             if (Test-Path $path) {
-              Write-Host "✓ FOUND: $path" -ForegroundColor Green
+              Write-Host "FOUND: $path" -ForegroundColor Green
             } else {
-              Write-Host "✗ NOT FOUND: $path" -ForegroundColor Red
+              Write-Host "NOT FOUND: $path" -ForegroundColor Red
             }
           }
           
-          Write-Host "`n=== Searching for all diaguids.lib files ===" -ForegroundColor Cyan
+          Write-Host ""
+          Write-Host "=== Searching for all diaguids.lib files ===" -ForegroundColor Cyan
           $allFiles = Get-ChildItem -Path "C:\Program Files\Microsoft Visual Studio" -Recurse -Filter "diaguids.lib" -ErrorAction SilentlyContinue
           if ($allFiles) {
             foreach ($file in $allFiles) {
