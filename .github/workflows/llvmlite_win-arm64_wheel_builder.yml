@@ -77,7 +77,7 @@ jobs:
       - name: Build wheel
         shell: cmd
         run: |
-          call C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsarm64.bat
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsarm64.bat"
           set CMAKE_ARGS=-DLLVMLITE_PACKAGE_FORMAT=wheel -DCMAKE_PREFIX_PATH=C:\vcpkg\installed\arm64-windows-static
           set LLVM_DIR=${{ github.workspace }}\llvm_install\llvm-arm64-install\lib\cmake\llvm
           python -m build --wheel --no-isolation
