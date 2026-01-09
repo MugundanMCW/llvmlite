@@ -87,12 +87,16 @@ jobs:
           )
       
       - name: Build wheel
-        env:
-          VSINSTALLDIR: ${{ env.VS_INSTALL_DIR }}
-          CMAKE_ARGS: -DDIA_SDK_DIR="${{ env.VS_INSTALL_DIR }}\DIA SDK" -DCMAKE_PREFIX_PATH=C:\vcpkg\installed\arm64-windows-static
-          LLVM_DIR: ${{ github.workspace }}\llvm_install\llvm-arm64-install\lib\cmake\llvm
-          LLVMLITE_PACKAGE_FORMAT: "wheel"
-        run: python -m build --wheel --no-isolation
+        shell: cmd
+        run: |
+          if exist "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" (
+            call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=arm64 -host_arch=arm64
+          ) else (
+            call "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat" -arch=arm64 -host_arch=arm64
+          )
+          set CMAKE_ARGS=-DLLVMLITE_PACKAGE_FORMAT=wheel -DCMAKE_PREFIX_PATH=C:\vcpkg\installed\arm64-windows-static
+          set LLVM_DIR=${{ github.workspace }}\llvm_install\llvm-arm64-install\lib\cmake\llvm
+          python -m build --wheel --no-isolation
         
 
       - name: Repair wheel with delvewheel
