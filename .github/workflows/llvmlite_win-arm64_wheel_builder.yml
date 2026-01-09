@@ -76,6 +76,7 @@ jobs:
 
       - name: Build wheel
         env:
+          VSINSTALLDIR: C:\Program Files\Microsoft Visual Studio\2022\Enterprise
           CMAKE_ARGS: >
             -DDIA_SDK_DIR=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\DIA SDK
             -DCMAKE_PREFIX_PATH=C:\vcpkg\installed\arm64-windows-static 
